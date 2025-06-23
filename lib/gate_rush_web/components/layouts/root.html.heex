@@ -581,7 +581,11 @@
             <span class="sr-only">Open user menu</span>
             <img
               class="w-8 h-8 rounded-full"
-              src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png"
+              src={if @current_user do
+                Exgravatar.gravatar_url(@current_user.email)
+              else
+               Exgravatar.gravatar_url("")
+              end}
               alt="user photo"
             />
           </button>
@@ -591,12 +595,14 @@
             id="dropdown"
           >
             <div class="py-3 px-4">
-              <span
-                class="block text-sm font-semibold text-gray-900 dark:text-white"
-                >Neil Sims</span>
-              <span
-                class="block text-sm text-gray-900 truncate dark:text-white"
-                >name@flowbite.com</span>
+             
+              <span class="block text-sm text-gray-900 truncate dark:text-white">
+                <%= if @current_user do %>
+                <%= @current_user.email %>
+                <% else %>
+                <.link :if={is_nil Pow.Plug.current_user(@conn)} navigate={~p"/session/new"}>Sign In</.link>
+                <% end %>
+                </span>
             </div>
             <ul
               class="py-1 text-gray-700 dark:text-gray-300"
@@ -692,10 +698,11 @@
               class="py-1 text-gray-700 dark:text-gray-300"
               aria-labelledby="dropdown">
               <li>
-                <a
-                  href="#"
-                  class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                  >Sign out</a>
+              <%= if @current_user do %>
+              <span class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+              <.link :if={Pow.Plug.current_user(@conn)} href={~p"/session"} method="delete">Sign out</.link>
+              </span>
+              <% end %>
               </li>
             </ul>
           </div>
