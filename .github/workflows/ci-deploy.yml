@@ -34,7 +34,8 @@ jobs:
 
       - name: Setup & build assets
         run: |
-          mix assets.setup    
+          mix assets.setup
+          mix assets.build
           mix assets.deploy 
 
       - name: Build release
