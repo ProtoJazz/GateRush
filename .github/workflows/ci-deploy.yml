@@ -21,13 +21,22 @@ jobs:
           otp-version: "25.x"
           elixir-version: "1.14.x"
 
-      - name: Install dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Fetch Elixir deps
         run: mix deps.get --only prod
+
+      - name: Install NPM deps
+        run: npm ci --prefix assets
 
       - name: Setup & build assets
         run: |
-          mix assets.setup
-          mix assets.deploy
+          mix assets.setup    # installs tailwindcss/esbuild if missing
+          mix assets.deploy   # runs tailwind gate_rush --minify, esbuild gate_rush --minify, phx.digest
 
       - name: Build release
         run: mix release
@@ -35,6 +44,7 @@ jobs:
       - name: Set image tag
         id: set_tag
         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
   docker:
     needs: build
     runs-on: ubuntu-latest
