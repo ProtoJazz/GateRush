@@ -29,6 +29,8 @@ COPY assets assets
 RUN npm ci --prefix assets
 
 # Build assets from app root
+RUN mix assets.setup
+RUN mix assets.build
 RUN mix assets.deploy
 
 # bring in the rest of your app code + runtime config
