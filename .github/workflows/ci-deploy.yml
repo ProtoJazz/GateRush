@@ -68,8 +68,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKER_REGISTRY }}/${{ toLower(github.repository_owner) }}/myapp:${{ needs.build.outputs.image-tag }}
-
+            ghcr.io/${{ vars.DOCKER_USERNAME }}/myapp:${{ needs.build.outputs.image-tag }}
 
 
   deploy:
