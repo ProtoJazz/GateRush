@@ -3,7 +3,7 @@ ARG ELIXIR_VERSION=1.14.2
 ARG OTP_VERSION=25.3.2
 ARG DEBIAN_VERSION=bullseye-slim
 
-FROM hexpm/elixir:1.14.5-otp-25-slim AS builder
+FROM hexpm/elixir:1.18.4-erlang-28.0.1-debian-bullseye-20250610-slim AS builder
 
 # install OS & Node deps
 RUN apt-get update \
