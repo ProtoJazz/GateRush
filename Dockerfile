@@ -28,7 +28,7 @@ COPY assets assets
 RUN cd assets \
  && npm ci \
  && cd .. \
- && mix assets.deploy     # calls your alias: tailwind gate_rush --minify, esbuild gate_rush --minify, phx.digest
+ && mix assets.deploy
 
 # bring in the rest of your app code + runtime config
 COPY lib lib
