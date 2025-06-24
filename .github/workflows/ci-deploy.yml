@@ -34,8 +34,8 @@ jobs:
 
       - name: Setup & build assets
         run: |
-          mix assets.setup    # installs tailwindcss/esbuild if missing
-          mix assets.deploy   # runs tailwind gate_rush --minify, esbuild gate_rush --minify, phx.digest
+          mix assets.setup    
+          mix assets.deploy 
 
       - name: Build release
         run: mix release
@@ -55,8 +55,8 @@ jobs:
 
       - uses: docker/login-action@v2
         with:
-          registry: ${{ variables.DOCKER_REGISTRY }}
-          username: ${{ variables.DOCKER_USERNAME }}
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build & push image
