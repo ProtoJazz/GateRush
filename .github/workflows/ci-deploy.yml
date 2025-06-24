@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 jobs:
-   build:
+  build:
     runs-on: ubuntu-latest
     env:
       MIX_ENV: prod
@@ -18,8 +18,8 @@ jobs:
       - name: Setup Elixir & Erlang
         uses: erlef/setup-elixir@v1
         with:
-          otp-version:    '25.x'
-          elixir-version: '1.14.x'
+          otp-version: "25.x"
+          elixir-version: "1.14.x"
 
       - name: Install dependencies
         run: mix deps.get --only prod
@@ -35,8 +35,6 @@ jobs:
       - name: Set image tag
         id: set_tag
         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
-
-
   docker:
     needs: build
     runs-on: ubuntu-latest
@@ -70,6 +68,6 @@ jobs:
       - name: Trigger Coolify via Official Action
         uses: themarkwill/coolify-actions@v0.0.3
         with:
-          coolify-url:    ${{ secrets.COOLIFY_URL }}
+          coolify-url: ${{ secrets.COOLIFY_URL }}
           coolify-app-id: ${{ secrets.COOLIFY_APP_ID }}
-          coolify-token:  ${{ secrets.COOLIFY_TOKEN }}
+          coolify-token: ${{ secrets.COOLIFY_TOKEN }}
