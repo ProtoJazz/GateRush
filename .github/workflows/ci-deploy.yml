@@ -5,31 +5,37 @@ on:
     branches: [main]
 
 jobs:
-  build:
+   build:
     runs-on: ubuntu-latest
-    environment: prod
+    env:
+      MIX_ENV: prod
     outputs:
-      image-tag: ${{ steps.meta.outputs.tag }}
+      image-tag: ${{ steps.set_tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - uses: erlef/setup-elixir@v1
+      - name: Setup Elixir & Erlang
+        uses: erlef/setup-elixir@v1
         with:
-          otp-version:    '26.x'
-          elixir-version: '1.18.x'
+          otp-version:    '25.x'
+          elixir-version: '1.14.x'
 
-      - name: Install deps & build assets
+      - name: Install dependencies
+        run: mix deps.get --only prod
+
+      - name: Setup & build assets
         run: |
-          mix deps.get
-          cd assets && npm ci && npm run deploy && cd ..
-          MIX_ENV=prod mix compile phx.digest
+          mix assets.setup
+          mix assets.deploy
 
       - name: Build release
-        run: MIX_ENV=prod mix release
+        run: mix release
 
       - name: Set image tag
-        id: meta
+        id: set_tag
         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+
 
   docker:
     needs: build
