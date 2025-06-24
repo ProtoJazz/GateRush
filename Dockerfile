@@ -25,10 +25,11 @@ RUN mix deps.get --only prod \
 
 # pull in your assets, install JS deps, build them
 COPY assets assets
-RUN cd assets \
- && npm ci \
- && cd .. \
- && mix assets.deploy
+# Install node dependencies without changing dirs
+RUN npm ci --prefix assets
+
+# Build assets from app root
+RUN mix assets.deploy
 
 # bring in the rest of your app code + runtime config
 COPY lib lib
