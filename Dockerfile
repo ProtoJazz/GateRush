@@ -25,6 +25,8 @@ RUN mix deps.get --only prod \
 
 # pull in your assets, install JS deps, build them
 COPY assets assets
+COPY config config
+COPY mix.exs mix.lock ./
 # Install node dependencies without changing dirs
 RUN npm ci --prefix assets
 
