@@ -31,7 +31,7 @@ jobs:
         run: mix deps.get --only prod
 
       - name: Install NPM deps
-        run: npm ci --prefix assets
+        run: npm install --prefix assets
 
       - name: Setup & build assets
         run: |
