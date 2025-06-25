@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     env:
       MIX_ENV: prod
     outputs:
@@ -47,7 +47,7 @@ jobs:
 
   docker:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     environment: prod
     steps:
       - uses: actions/checkout@v3
