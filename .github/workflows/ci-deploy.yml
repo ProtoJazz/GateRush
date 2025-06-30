@@ -1,85 +1,85 @@
-name: Build & Deploy Phoenix
+# name: Build & Deploy Phoenix
 
-on:
-  push:
-    branches: [main]
+# on:
+#   push:
+#     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-24.04-arm
-    env:
-      MIX_ENV: prod
-    outputs:
-      image-tag: ${{ steps.set_tag.outputs.tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+# jobs:
+#   build:
+#     runs-on: ubuntu-24.04-arm
+#     env:
+#       MIX_ENV: prod
+#     outputs:
+#       image-tag: ${{ steps.set_tag.outputs.tag }}
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v3
 
-      - name: Setup Elixir & Erlang
-        uses: erlef/setup-elixir@v1
-        with:
-          otp-version: "25.x"
-          elixir-version: "1.14.x"
+#       - name: Setup Elixir & Erlang
+#         uses: erlef/setup-elixir@v1
+#         with:
+#           otp-version: "25.x"
+#           elixir-version: "1.14.x"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20.x"
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: "20.x"
 
-      - name: Fetch Elixir deps
-        run: mix deps.get --only prod
+#       - name: Fetch Elixir deps
+#         run: mix deps.get --only prod
 
-      - name: Install NPM deps
-        run: npm ci --prefix assets
+#       - name: Install NPM deps
+#         run: npm ci --prefix assets
 
-      - name: Setup & build assets
-        run: |
-          mix assets.setup
-          mix assets.build
-          mix assets.deploy 
+#       - name: Setup & build assets
+#         run: |
+#           mix assets.setup
+#           mix assets.build
+#           mix assets.deploy 
 
-      - name: Build release
-        run: mix release
+#       - name: Build release
+#         run: mix release
 
-      - name: Set image tag
-        id: set_tag
-        run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+#       - name: Set image tag
+#         id: set_tag
+#         run: echo "tag=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
-  docker:
-    needs: build
-    runs-on: ubuntu-24.04-arm
-    environment: prod
-    steps:
-      - uses: actions/checkout@v3
+#   docker:
+#     needs: build
+#     runs-on: ubuntu-24.04-arm
+#     environment: prod
+#     steps:
+#       - uses: actions/checkout@v3
 
-      - uses: docker/setup-buildx-action@v2
+#       - uses: docker/setup-buildx-action@v2
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+#       - name: Log in to GHCR
+#         uses: docker/login-action@v2
+#         with:
+#           registry: ghcr.io
+#           username: ${{ github.repository_owner }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build & push image
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: Dockerfile
-          platforms: linux/arm64
-          push: true
-          tags: |
-            ghcr.io/${{ vars.DOCKER_USERNAME }}/gate_rush:${{ needs.build.outputs.image-tag }}
+#       - name: Build & push image
+#         uses: docker/build-push-action@v3
+#         with:
+#           context: .
+#           file: Dockerfile
+#           platforms: linux/arm64
+#           push: true
+#           tags: |
+#             ghcr.io/${{ vars.DOCKER_USERNAME }}/gate_rush:${{ needs.build.outputs.image-tag }}
 
 
-  deploy:
-    needs: docker
-    runs-on: ubuntu-latest
-    environment: prod
-    steps:
-      - name: Trigger Coolify via Official Action
-        uses: themarkwill/coolify-actions@v0.0.3
-        with:
-          coolify-url: ${{ secrets.COOLIFY_URL }}
-          coolify-app-id: ${{ secrets.COOLIFY_APP_ID }}
-          coolify-token: ${{ secrets.COOLIFY_TOKEN }}
+#   deploy:
+#     needs: docker
+#     runs-on: ubuntu-latest
+#     environment: prod
+#     steps:
+#       - name: Trigger Coolify via Official Action
+#         uses: themarkwill/coolify-actions@v0.0.3
+#         with:
+#           coolify-url: ${{ secrets.COOLIFY_URL }}
+#           coolify-app-id: ${{ secrets.COOLIFY_APP_ID }}
+#           coolify-token: ${{ secrets.COOLIFY_TOKEN }}
