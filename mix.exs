@@ -19,7 +19,7 @@ defmodule GateRush.MixProject do
   def application do
     [
       mod: {GateRush.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :telemetry]
     ]
   end
 

@@ -15,6 +15,7 @@ defmodule GateRush.Release do
 
   defp load_app do
     Application.load(:gate_rush)
+    Enum.each(Application.spec(:gate_rush, :applications), &Application.ensure_all_started/1)
   end
 
   defp migrations_path(repo) do
